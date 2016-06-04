@@ -56,14 +56,16 @@ exports.register = function(req,res){
     var user = mongoose.model('user',database.UserSchema),
         rese = req.session,
         userId = req.body['user'],
-        userPwd = req.body['pwd'],
-        userRegist = new user({
+        userPwd = req.body['pwd'];
+    userPwd = md5(userPwd);
+    var userRegist = new user({
         'user' : userId,
         'pwd' : userPwd,
         'lastChange' : Date.now()
     });
     
-    userPwd = md5(userPwd);
+    
+    console.log(userPwd);
     userRegist.save(function(err){
         if(err) res.status(500).end();
         else res.send({"register" : true});
