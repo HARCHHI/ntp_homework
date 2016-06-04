@@ -18,6 +18,7 @@ var ExtView = Backbone.View.extend({
                     workspace.navbar.render();
                     self.render();
                     workspace.userName = res.user;
+                    workspace.userGroup = res.groups;
                 }
             }
         });
@@ -109,7 +110,7 @@ var V_login = ExtView.extend({
     name : 'login',
     initialize : function(){
         this.render();
-        this.user = new userInfo();
+        this.user = new loginInfo_model();
     },
     events : {
         'change #user' : 'setValue',
@@ -122,17 +123,9 @@ var V_login = ExtView.extend({
     logOrReg : function(){
         this.user.save({},{
             success : function(res){
-                //alert("login success");
                 if(res.attributes.mutilog == true)alert('multi login , auto logout another user');
-                //if(res.attributes.lastLogin !=null) alert('last login time '+ res.attributes.lastLogin);
-                workspace.logined = true;
-                workspace.userName = res.attributes.user;
-                workspace.userGroup = res.attributes.group;
-                console.log(workspace.userGroup);
                 workspace.navbar.render();
                 workspace.navigate('/',{ trigger : true });
-                /*var lastDay = new Date(res.attributes.lastChange).getTime();
-                if(Date.now()-lastDay > 10000)alert('too long to change password,\nplz change your password');*/
             },
             error : function(model,err){
                 alert('login fail');
@@ -209,7 +202,7 @@ var V_chat = ExtView.extend({
     name : 'chat',
     initialize : function(){
         this.loginCheck();
-        this.initChat();
+        this.inited = false;
     },
     initChat : function(){
         workspace.socket = io();
@@ -230,6 +223,10 @@ var V_chat = ExtView.extend({
         'submit' : 'sendMes'
     },
     sendMes : function(){
+        if(!this.inited) {
+            this.initChat();
+            this.inited = true;
+        }
         var textIn = $('#Ciphertext');
         if(textIn.val() !=""){
             var data = {

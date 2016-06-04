@@ -3,11 +3,12 @@ var userState = Backbone.Model.extend({
     idAttribute : '_id',
     defaults : {
         user : '',
-        login : false
+        login : false,
+        groups : []
     }
 });
 
-var userInfo = Backbone.Model.extend({
+var loginInfo_model = Backbone.Model.extend({
     urlRoot : '/login',
     idAttribute : '_id',
     defaults : {
@@ -17,7 +18,7 @@ var userInfo = Backbone.Model.extend({
 })
 
 var userList_model = Backbone.Model.extend({
-    urlRoot : '/getUser',
+    urlRoot : '/getUsers',
     idAttribute : '_id',
     defaults : {
         user : '',
@@ -27,7 +28,7 @@ var userList_model = Backbone.Model.extend({
 })
 
 var userList_collection = Backbone.Collection.extend({
-   url : '/getUser' ,
+   url : '/getUsers' ,
     model : userList_model
 });
 
@@ -38,5 +39,14 @@ var changePwd_moedl = Backbone.Model.extend({
         user : '',
         Newpwd : '',
         Oldpwd : ''
+    }
+});
+
+var userInfo_model = Backbone.Model.extend({
+    usrRoot : '/getInfo',
+    idAttribute : '_id',
+    defaults : {
+        user : '',
+        groups : []
     }
 });
