@@ -1,0 +1,31 @@
+{
+  "name": "ntp_homework",
+  "version": "1.0.0",
+  "description": "a simple projec manager system",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HARCHHI/ntp_homework.git"
+  },
+  "keywords": [
+    "nodejs",
+    "backbone"
+  ],
+  "author": "HARCHHI",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HARCHHI/ntp_homework/issues"
+  },
+  "homepage": "https://github.com/HARCHHI/ntp_homework#readme",
+  "devDependencies": {
+    "blueimp-md5": "^2.3.0",
+    "body-parser": "^1.15.1",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "mongoose": "^4.4.19",
+    "socketio": "^1.0.0"
+  }
+}

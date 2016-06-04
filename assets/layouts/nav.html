@@ -1,0 +1,34 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Home</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+            <li><a href="#home/userlist">UserList</a></li>
+            <li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Project Sys <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#home/prjMan">Team Manager</a></li>
+                        <li><a href="#home/prjMan">Project Manager</a></li>
+                    </ul>
+                </li>
+                <li><a href="#home/chat">Team Chat Room</a></li>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <% if(workspace.logined){ %> <li><a href="#home/changepwd">ChangePwd</a></li> <%}%>
+            <% if( workspace.logined){ %> <li><a href="#" id='logoutBtn'>Logout</a></li> <%}%>
+            <% if(!workspace.logined){ %> <li><a href="#home/login">Login</a></li> <%}%>
+            <% if(!workspace.logined){ %> <li><a href="#home/register">Register</a></li> <%}%>
+        </ul>
+    </div>
+    </div>
+</nav>

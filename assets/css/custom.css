@@ -1,0 +1,9 @@
+body{
+    font-size: 18px;
+}
+.navbar-brand{
+    font-size: 36px;
+}
+th,td{
+    text-align:center;
+}
