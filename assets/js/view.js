@@ -225,7 +225,7 @@ var V_groMan = ExtView.extend({
             delGro.save({},{
                success : function(model,rs) {
                    var data = self.State.get('groups');
-                   data.shift(data.indexOf(model.get('group')),1);
+                   data.splice(data.indexOf(model.get('group')),1);
                    self.State.set('groups',data);
                    self.render();
                }
@@ -239,15 +239,22 @@ var V_chat = ExtView.extend({
     initialize : function(){
         var self = this;
         this.loginCheck(function(){
-            workspace.socket = io();
-            workspace.socket.on('message',function(data){
-                self.appendMes(data);
-            });
-            //if(self.State.get('groups') == []) room = "no room"
-            workspace.socket.emit('adduser',self.State.get('groups')[0]);
-            self.messages = [];
-            self.State.set('selectRoom',self.State.get('groups')[0]);
-            self.render();
+            if(self.State.get('groups').length != 0){
+                workspace.socket = io();
+                workspace.socket.on('message',function(data){
+                    self.appendMes(data);
+                });
+                workspace.socket.emit('adduser',self.State.get('groups')[0]);
+                self.messages = [];
+                self.State.set('selectRoom',self.State.get('groups')[0]);
+                self.render();
+            }
+            else{
+                alert('not Join any Group yet');
+                self.messages = [];
+                self.State.set('selectRoom','noRoom');
+                workspace.navigate('/home/groMan',{ trigger : true });
+            }
         });
     },
     render : function(){
@@ -260,6 +267,12 @@ var V_chat = ExtView.extend({
     events : {
         'submit' : 'sendMes',
         'click' : 'changeRoom'
+    },
+    remove : function(){
+        this.$el.empty();
+        this.off().undelegateEvents().stopListening();
+        workspace.socket.disconnect();
+        return this;
     },
     sendMes : function(){
         var textIn = $('#Ciphertext');
@@ -284,10 +297,10 @@ var V_chat = ExtView.extend({
     },
     changeRoom : function(e){
         var room = e.target;
-        if(room.id[0] == '_') {
+        if(room.id[0] == '_' && this.State.get('selectRoom') != $(room).text()) {
             room = $(room);
             this.State.set('selectRoom',room.text());
-            workspace.socket.emit('changeRoom',room.text());
+            if(workspace.socket)workspace.socket.emit('changeRoom',room.text());
             this.messages = [];
             this.render();
         }

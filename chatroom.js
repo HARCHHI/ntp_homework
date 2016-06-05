@@ -8,6 +8,8 @@ exports.chatinit = function(http){
             });
         });
         socket.on('adduser',function(roomName){
+            if(socket.room != undefined)
+                socket.leave(socket.room);
             socket.room = roomName;
             socket.join(roomName);
         });
