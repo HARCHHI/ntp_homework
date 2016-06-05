@@ -29,7 +29,11 @@ app.post('/logout',webSite.logout);
 
 app.post('/changePwd',webSite.changePwd);
 
-app.post('getInfo',webSite.getInfo);
+app.post('/addGroup',webSite.addGroup);
+
+app.post('/delGroup',webSite.delGroup);
+
+
 
 http.listen(port);
 console.log("working on " + port);

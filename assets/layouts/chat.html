@@ -1,4 +1,17 @@
-<h1>Chat Room</h1>
+<div>
+    <h1 class="col-lg-10" id='chatroom'><%=selectRoom%></h1>  
+    <div class="btn-group"  style="margin-top:15px;">
+        <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            Change Room
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <% for(var group in groups){ %>
+                <li><a href="javascript:void(0);" id="_<%=groups[group]%>"><%=groups[group]%></a></li>
+            <%}%>
+        </ul>
+    </div>
+</div>
 <br/>
 <form onsubmit="return false">
 <div id='messArea' style="height:40%;overflow-y: scroll;"></div>

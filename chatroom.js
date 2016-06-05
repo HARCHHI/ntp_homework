@@ -14,6 +14,11 @@ exports.chatinit = function(http){
         socket.on('disconnect', function(){
             socket.leave(socket.room);
         });
+        socket.on('changeRoom',function(roomName){
+            socket.leave(socket.room);
+            socket.join(roomName);
+            socket.room = roomName;
+        });
     });
 
 }

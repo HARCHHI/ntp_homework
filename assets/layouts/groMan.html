@@ -1,0 +1,35 @@
+<h1>Your Group</h1>
+<br/>
+<table class="table table-striped table-hover" >
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Group</th>
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+        <% var i =1;for(var group in groups){ %>
+        <tr>
+            <td><%=i%></td>
+            <td><%=groups[group]%></td>
+            <td><button type="submit" class="btn btn-primary" id="<%=groups[group]%>">leave</button></td>
+        </tr>
+        <% i++; }%>
+    </tbody>
+</table>
+<br/>
+<h1>Join a new Group</h1>
+<div class="well bs-component col-lg-7">
+    <form class="form-horizontal" onsubmit="return false">
+        <fieldset>
+            <div>
+                <label class="col-lg-3 control-label" for="groupName" >Group Name</label>
+                <div class="col-lg-6 ">
+                    <input type="text" class="form-control" id="groupName"/>
+                </div>
+                <a type="submit" class="btn btn-primary col-lg-2" id="join" >Join</a>
+            </div>
+        </fieldset>
+    </form>
+</div>

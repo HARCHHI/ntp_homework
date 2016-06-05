@@ -42,11 +42,10 @@ var changePwd_moedl = Backbone.Model.extend({
     }
 });
 
-var userInfo_model = Backbone.Model.extend({
-    usrRoot : '/getInfo',
+var addGroup_model = Backbone.Model.extend({
+    urlRoot : '/addGroup',
     idAttribute : '_id',
     defaults : {
-        user : '',
-        groups : []
+        group : ""
     }
 });

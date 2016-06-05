@@ -1,9 +1,9 @@
 var ExtView = Backbone.View.extend({
     el : $('main.container'),
     initialize : function(){
-        this.loginCheck();
+        this.loginCheck(null);
     },
-    loginCheck : function(){
+    loginCheck : function(callback){
         var self = this;
         this.State = new userState();
         this.State.fetch({
@@ -16,9 +16,9 @@ var ExtView = Backbone.View.extend({
                 else {
                     workspace.logined = true;
                     workspace.navbar.render();
-                    self.render();
                     workspace.userName = res.user;
-                    workspace.userGroup = res.groups;
+                    self.render();
+                    if(callback != null) callback();
                 }
             }
         });
@@ -32,7 +32,7 @@ var ExtView = Backbone.View.extend({
     render : function(){
         var self = this;
         $.get('./layouts/' + this.name +".html",function(res){
-            self.$el.html( res );
+            self.$el.html( _.template(res) );
         });
     }
 });
@@ -84,18 +84,14 @@ var V_userlist = ExtView.extend({
     name : 'userlist',
     initialize : function(){
         this.models = new userList_collection();
-        this.loginCheck();
+        this.loginCheck(null);
         var self = this;
         this.models.fetch({
             success : function(rs){
                 self.models = rs;
                 if(workspace.logined == true) self.render();
-                //self.render();
             }
         });
-        
-        //console.log(workspace.logined);
-        
     },
     render : function(){
         var self = this;
@@ -155,7 +151,7 @@ var V_register = V_login.extend({
 var V_changepwd = ExtView.extend({
     name : 'changepwd',
     initialize : function(){
-        ExtView.prototype.loginCheck();
+        this.loginCheck();
         this.render();
         this.user = new changePwd_moedl();
     },
@@ -181,57 +177,96 @@ var V_changepwd = ExtView.extend({
     }
 });
 
-var V_prjMan = ExtView.extend({
-    name : 'prjMan',
-    events : {
-        'click #go' : 'encry'
+var V_groMan = ExtView.extend({
+    name : 'groMan',
+    initialize : function(){
+        this.loginCheck(null);
+        this.model = new addGroup_model();
     },
-    encry : function(){
-        var plain = $('#plaintext').val();
-        var resault = "",data,pos;
-        for(var i=0 ;i<plain.length;i++){
-            pos = Math.floor(Math.random()*3);
-            data = plain.charAt(i);
-            resault += encrylib[data][pos] + " ";
+    render : function(){
+        var self = this;
+        $.get('./layouts/' + this.name +".html",function(res){
+            var template = _.template(res);
+            self.$el.html(template(self.State.attributes));
+        })
+    },
+    events : {
+        'change #groupName' : 'setValue',
+        'submit' : 'addGroup',
+        'click button' : 'leaveGroup'
+    },
+    setValue : function(e){
+        this.model.set("group",e.target.value.replace(/ /g,''));
+    },
+    addGroup : function(){
+        var groupName = $('#groupName').val().replace(/ /g,'');
+        $('#groupName').val(groupName);
+        if(groupName == '') return;
+        var self = this;
+        this.model.save({},{
+           success : function(model,rs) {
+               if(rs.fail) alert("Join fail");
+               else {
+                   var result = self.State.get('groups');
+                   result.push(model.get('group'));
+                   self.State.set('groups',result);
+                   self.render();
+               }
+           }
+        });
+    },
+    leaveGroup : function(e){        
+        if(e.target.id !='join'){
+            var delGro = new addGroup_model(),
+                delName = e.target.id,
+                self = this;
+            delGro.urlRoot = '/delGroup';
+            delGro.set('group',delName);
+            delGro.save({},{
+               success : function(model,rs) {
+                   var data = self.State.get('groups');
+                   data.shift(data.indexOf(model.get('group')),1);
+                   self.State.set('groups',data);
+                   self.render();
+               }
+            });
         }
-        $('#resault').text(resault);
     }
 });
 
 var V_chat = ExtView.extend({
     name : 'chat',
     initialize : function(){
-        this.loginCheck();
-        this.inited = false;
-    },
-    initChat : function(){
-        workspace.socket = io();
         var self = this;
-        workspace.socket.on('message',function(data){
-            self.appendMes(data);
+        this.loginCheck(function(){
+            workspace.socket = io();
+            workspace.socket.on('message',function(data){
+                self.appendMes(data);
+            });
+            //if(self.State.get('groups') == []) room = "no room"
+            workspace.socket.emit('adduser',self.State.get('groups')[0]);
+            self.messages = [];
+            self.State.set('selectRoom',self.State.get('groups')[0]);
+            self.render();
         });
-        workspace.socket.emit('adduser',workspace.userGroup);
-        this.messages = [];
     },
     render : function(){
         var self = this;
         $.get('./layouts/' + this.name +".html",function(res){
-            self.$el.html( _.template(res) );
-        });
+            var template = _.template(res);
+            self.$el.html(template(self.State.attributes));
+        })
     },
     events : {
-        'submit' : 'sendMes'
+        'submit' : 'sendMes',
+        'click' : 'changeRoom'
     },
     sendMes : function(){
-        if(!this.inited) {
-            this.initChat();
-            this.inited = true;
-        }
         var textIn = $('#Ciphertext');
         if(textIn.val() !=""){
             var data = {
-                group : workspace.userGroup,
-                userName : workspace.userName,
+                group : this.State.get('selectRoom'),
+                userName : this.State.get('user'),
                 message : textIn.val()
             };
             textIn.val('');
@@ -246,6 +281,17 @@ var V_chat = ExtView.extend({
         messArea.empty();
         messArea.append(this.messages);
         messArea.scrollTop($('#messArea').get(0).scrollHeight);
+    },
+    changeRoom : function(e){
+        var room = e.target;
+        if(room.id[0] == '_') {
+            room = $(room);
+            this.State.set('selectRoom',room.text());
+            workspace.socket.emit('changeRoom',room.text());
+            this.messages = [];
+            this.render();
+        }
+        
     }
 });
 
