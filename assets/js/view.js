@@ -300,7 +300,7 @@ var V_chat = ExtView.extend({
         if(room.id[0] == '_' && this.State.get('selectRoom') != $(room).text()) {
             room = $(room);
             this.State.set('selectRoom',room.text());
-            if(workspace.socket)workspace.socket.emit('changeRoom',room.text());
+            if(workspace.socket != undefined)workspace.socket.emit('changeRoom',room.text());
             this.messages = [];
             this.render();
         }
