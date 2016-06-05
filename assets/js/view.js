@@ -271,7 +271,7 @@ var V_chat = ExtView.extend({
     remove : function(){
         this.$el.empty();
         this.off().undelegateEvents().stopListening();
-        workspace.socket.disconnect();
+        if(workspace.socket != undefined) workspace.socket.disconnect();
         return this;
     },
     sendMes : function(){
@@ -300,7 +300,7 @@ var V_chat = ExtView.extend({
         if(room.id[0] == '_' && this.State.get('selectRoom') != $(room).text()) {
             room = $(room);
             this.State.set('selectRoom',room.text());
-            if(workspace.socket != undefined)workspace.socket.emit('changeRoom',room.text());
+            workspace.socket.emit('changeRoom',room.text());
             this.messages = [];
             this.render();
         }
