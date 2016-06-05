@@ -26,6 +26,7 @@
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "mongoose": "^4.4.19",
-    "socket.io": "^1.4.6"
+    "socket.io": "^1.4.6",
+    "step": "0.0.6"
   }
 }
