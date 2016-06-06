@@ -155,7 +155,7 @@ exports.addGroup = function(req,res){
             }
         }
     );
-}
+};
 
 exports.delGroup = function(req,res){
     var groupModel = mongoose.model('group',database.GroupSchema),
@@ -190,4 +190,66 @@ exports.delGroup = function(req,res){
         }
     );
     
+};
+
+exports.addPrj = function(req,res){
+    var newPrj = req.body['newprj'],
+        groupName = req.body['group'],
+        groupModel = mongoose.model('group',database.GroupSchema),
+        prjModel = mongoose.model('prj',database.PrjSchema);
+    step(
+        function getGroupInfo(err){
+            groupModel.findOne({group : groupName},this);
+        },
+        function checkMultiPrj(err,rs){
+            prjModel.findOne({masterId : groupName,name : newPrj},this);
+        },
+        function createPrj(err,rs){
+            if(rs == null){
+                var addPrj = new prjModel({
+                    'masterId' : groupName,
+                    'name' : newPrj,
+                    'buildDate' : Date.now()
+                });
+                addPrj.save(this);
+            }
+            else res.status(200).send({fail : true}).end();
+        },
+        function addResult(err){
+            if(err) console.error(err.stack);
+            else res.status(200).send({fail : false}).end();
+        }
+    );
+};
+
+exports.getPrjs = function(req,res){
+    var groupName = req.query.group;
+    
+    var prjs = mongoose.model('prj',database.PrjSchema);
+    prjs.find({masterId : groupName},function(err,rs){
+        res.status(200).send(rs).end();
+    });
+}
+
+exports.addFea = function(req,res){
+    var feaName = req.body['feaName'],
+        feaDesc = req.body['feaDesc'],
+        groupName = req.body['group'],
+        prjName = req.body['name'];
+        prjModel = mongoose.model('prj',database.PrjSchema);
+    prjModel.update({name : prjName , masterId : groupName},{$push:{feature : feaName,Desc : feaDesc}},{upsert : true},function(err){
+        res.status(200).send({fail:false}).end();
+    });
+}
+
+exports.delPrj = function(req,res){
+    var groupName = req.body['masterId'],
+        prjName = req.body['name'];
+    var prjModel = mongoose.model('prj',database.PrjSchema);
+    prjModel.remove({masterId : groupName , name : prjName},function(err){
+        if(err)console.error(err.stack);
+        else{
+            res.status(200).send({fail : false}).end();
+        }
+    });
 }

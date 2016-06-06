@@ -21,6 +21,8 @@ app.get('/loginCheck',webSite.loginCheck);
 
 app.get('/getUsers',webSite.getUsers);
 
+app.get('/prjMethod',webSite.getPrjs);
+
 app.post('/login',webSite.login);
 
 app.post('/register',webSite.register);
@@ -33,7 +35,11 @@ app.post('/addGroup',webSite.addGroup);
 
 app.post('/delGroup',webSite.delGroup);
 
+app.post('/prjMethod',webSite.addPrj);
 
+app.post('/addFeature',webSite.addFea);
+
+app.post('/delPrj',webSite.delPrj);
 
 http.listen(port);
 console.log("working on " + port);

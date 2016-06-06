@@ -234,6 +234,111 @@ var V_groMan = ExtView.extend({
     }
 });
 
+var V_prjMan = ExtView.extend({
+    name : 'prjMan',
+    initialize : function(){
+        var self = this;
+        this.loginCheck(function(){
+            self.models = new prj_collection();
+            self.model = new prj_model();
+            self.newfea = new prjFea_model();
+            self.model.set('group',self.State.get('groups')[0]);
+            self.newfea.set('group',self.State.get('groups')[0]);
+            self.loadPrjs(self.State.get('groups')[0]);
+        });
+    },
+    render : function(callback){
+        var self = this;
+        $.get('./layouts/' + this.name +".html",function(res){
+            var template = _.template(res);
+            self.$el.html(template(self.State.attributes));
+            if(callback) callback();
+        });
+    },
+    events : {
+        "click div a[data = 'group']" : 'changeGroup',
+        "click div a[data = 'project']" : 'changePrj',
+        "change #newPrjName" : 'setValue',
+        "change #feaName" : 'setFea',
+        "change #feaDesc" : 'setFea',
+        "click #addPrj" : 'addPrj' ,
+        "click #feaBtn" : 'addFea',
+        "click #removeBtn" : 'removePrj'
+    },
+    changeGroup : function(e){
+        $(".active[data='group']").removeClass('active');
+        $(e.target).addClass('active');
+        this.State.set('showPrj',"");
+        this.loadPrjs(e.target.id);
+        this.model.set('group',e.target.id);
+        this.newfea.set('group',e.target.id);
+    },
+    changePrj : function(e){
+        $(".active[data='project']").removeClass('active');
+        var groupId =$(".active").attr('id');
+        var target = $(e.target);
+        var self = this;
+        this.State.set('showPrj',this.State.get('prjs')[target.attr('index')]);
+        this.render(function(){
+            $("a[index='"+target.attr('index')+"']").addClass('active');
+            $("#"+ groupId ).addClass('active');
+            self.newfea.set('name',target.attr('id'));
+        });
+    },
+    setValue : function(e){
+        this.model.set('newprj',e.target.value);
+    },
+    setFea : function(e){
+        this.newfea.set(e.target.id,e.target.value);
+    },
+    addPrj : function(){
+        if(this.model.get('newprj') == "") return;
+        var self = this;
+        this.model.save({},{
+            success : function(model,res){
+                if(res.fail) alert('create fail');
+                else self.loadPrjs(model.get('group'));
+            }
+        });
+    },
+    removePrj : function(){
+        var delPrj =new delPrj_model({
+            masterId : this.State.get('showPrj').get('masterId'),
+            name : this.State.get('showPrj').get('name'),
+        });
+        var self = this;
+        delPrj.save({},{
+            success : function(model,rs){
+                self.State.set('showPrj',"");
+                self.loadPrjs(model.get('masterId'))
+            }
+        });
+    },
+    loadPrjs : function(data){
+        var self = this;
+        self.models.fetch({
+            data : $.param({group : data}),
+            success : function(model,rs){
+                self.State.set('prjs',model.models);
+                self.render(function(){
+                    $('#'+data).addClass('active');
+                });
+            }
+        });
+    },
+    addFea : function(){
+        var groupName = $(".active[data='group']").attr('id'),
+            prjName = $(".active[data='project']").attr('id');
+        var self = this;
+        $('input').val("");
+        this.newfea.save({},{
+            success : function(model,rs){
+                $('#feaTable').append("<tr><td></td><td>" + model.get('feaName') + "</td><td>" + model.get('feaDesc') + "</td></tr>");
+            }
+        });
+    }
+});
+
 var V_chat = ExtView.extend({
     name : 'chat',
     initialize : function(){
@@ -307,5 +412,3 @@ var V_chat = ExtView.extend({
         
     }
 });
-
-//underscore   _.find(array,function(obj){reutnr obj.id=='require'});

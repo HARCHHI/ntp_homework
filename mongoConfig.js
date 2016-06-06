@@ -14,3 +14,11 @@ exports.GroupSchema = new mongoose.Schema({
     group : {type : String , unique : true},
     member : Number
 });
+
+exports.PrjSchema = new mongoose.Schema({
+    masterId : String,
+    name : String,
+    buildDate : Date,
+    feature : [String],
+    Desc : [String]
+});

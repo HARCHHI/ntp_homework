@@ -4,7 +4,9 @@ var userState = Backbone.Model.extend({
     defaults : {
         user : '',
         login : false,
-        groups : []
+        groups : [],
+        prjs : [],
+        showPrj : ''
     }
 });
 
@@ -47,5 +49,40 @@ var addGroup_model = Backbone.Model.extend({
     idAttribute : '_id',
     defaults : {
         group : ""
+    }
+});
+
+var prj_model = Backbone.Model.extend({
+    urlRoot : '/prjMethod',
+    idAttribute : '_id',
+    defaults : {
+        group : "",
+        prjs : [],
+        newprj : ""
+    }
+});
+
+var prj_collection = Backbone.Collection.extend({
+    url : '/prjMethod',
+    model : prj_model
+});
+
+var prjFea_model = Backbone.Model.extend({
+    urlRoot : '/addFeature',
+    idAttribute : '_id',
+    defaults : {
+        name : "",
+        feaName : "",
+        feaDesc : "",
+        group : ""
+    }
+});
+
+var delPrj_model = Backbone.Model.extend({
+    urlRoot : '/delPrj',
+    idAttribute : '_id',
+    defaults : {
+        name : "",
+        masterId : ""
     }
 });
