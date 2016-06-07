@@ -334,9 +334,9 @@ var V_prjMan = ExtView.extend({
         $('input').val("");
         this.newfea.save({},{
             success : function(model,rs){
-                $('#feaTable').append("<tr><td><button class='btn btn-primary' id=" + 
+                $('#feaTable').append("<tr id='_"+ model.get('feaName') +"'><td><button class='btn btn-primary' id=" + 
                                       model.get('feaName') + 
-                                      " data='delBtn'>Del</button></td><td>" + 
+                                      " data='delBtn' desc='"+model.get('feaDesc') +"'>Del</button></td><td>" + 
                                       model.get('feaName') + 
                                       "</td><td>" + 
                                       model.get('feaDesc') + 
