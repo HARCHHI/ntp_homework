@@ -258,6 +258,7 @@ var V_prjMan = ExtView.extend({
     events : {
         "click div a[data = 'group']" : 'changeGroup',
         "click div a[data = 'project']" : 'changePrj',
+        "click div button[data = 'delBtn']" : 'delFea',
         "change #newPrjName" : 'setValue',
         "change #feaName" : 'setFea',
         "change #feaDesc" : 'setFea',
@@ -333,7 +334,24 @@ var V_prjMan = ExtView.extend({
         $('input').val("");
         this.newfea.save({},{
             success : function(model,rs){
-                $('#feaTable').append("<tr><td></td><td>" + model.get('feaName') + "</td><td>" + model.get('feaDesc') + "</td></tr>");
+                $('#feaTable').append("<tr><td><button class='btn btn-primary' id=" + 
+                                      model.get('feaName') + 
+                                      " data='delBtn'>Del</button></td><td>" + 
+                                      model.get('feaName') + 
+                                      "</td><td>" + 
+                                      model.get('feaDesc') + 
+                                      "</td></tr>");
+            }
+        });
+},
+    delFea : function(e){
+        var target = $(e.target);
+        this.newfea.set('feaName',target.attr('id'));
+        this.newfea.set('feaDesc',target.attr('desc'));
+        this.newfea.urlRoot ='/delFeature';
+        this.newfea.save({},{
+            success : function(model,res){
+                $('#_'+model.get('feaName')).remove();
             }
         });
     }

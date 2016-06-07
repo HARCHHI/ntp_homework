@@ -235,11 +235,12 @@ exports.addFea = function(req,res){
     var feaName = req.body['feaName'],
         feaDesc = req.body['feaDesc'],
         groupName = req.body['group'],
-        prjName = req.body['name'];
+        prjName = req.body['name'],
         prjModel = mongoose.model('prj',database.PrjSchema);
-    prjModel.update({name : prjName , masterId : groupName},{$push:{feature : feaName,Desc : feaDesc}},{upsert : true},function(err){
-        res.status(200).send({fail:false}).end();
-    });
+    if(feaName !="" && feaDesc != "")
+        prjModel.update({name : prjName , masterId : groupName},{$push:{feature : feaName,Desc : feaDesc}},{upsert : true},function(err){
+            res.status(200).send({fail:false}).end();
+        });
 }
 
 exports.delPrj = function(req,res){
@@ -252,4 +253,28 @@ exports.delPrj = function(req,res){
             res.status(200).send({fail : false}).end();
         }
     });
+}
+
+exports.delFea = function(req,res){
+    var feaName = req.body['feaName'],
+        feaDesc = req.body['feaDesc'],
+        groupName = req.body['group'],
+        prjName = req.body['name'],
+        prjModel = mongoose.model('prj',database.PrjSchema);
+    step(
+        function getPrjData(err){
+            prjModel.findOne({name : prjName,masterId : groupName},this);
+        },
+        function delFeature(err,rs){
+            var test = rs;
+
+            rs.Desc.splice(rs.Desc.indexOf(feaDesc),1);
+            rs.feature.splice(rs.feature.indexOf(feaName),1);
+            prjModel.update({name : prjName,masterId : groupName},rs,{upsert : true},this);
+        },
+        function sendSuccess(err){
+            res.status(200).send({fail:false}).end();
+        }
+    );
+    
 }

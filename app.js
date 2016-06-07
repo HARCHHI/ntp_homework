@@ -41,5 +41,7 @@ app.post('/addFeature',webSite.addFea);
 
 app.post('/delPrj',webSite.delPrj);
 
+app.post('/delFeature',webSite.delFea);
+
 http.listen(port);
 console.log("working on " + port);

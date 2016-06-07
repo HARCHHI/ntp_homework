@@ -13,10 +13,10 @@
             <% if(showPrj != ""){%>
             <tbody >
                 <%for(var i in showPrj.get('Desc')){%>
-                <tr>
-                    <td></td>
-                    <td><%=showPrj.get('Desc')[i]%></td>
+                <tr id="_<%=showPrj.get('feature')[i]%>">
+                    <td><button class="btn btn-primary" id="<%=showPrj.get('feature')[i]%>" desc="<%=showPrj.get('Desc')[i]%>" data='delBtn'>Del</button></td>
                     <td><%=showPrj.get('feature')[i]%></td>
+                    <td><%=showPrj.get('Desc')[i]%></td>
                 </tr>
                 <%}%>
             </tbody>
