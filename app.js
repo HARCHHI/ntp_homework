@@ -1,6 +1,7 @@
 var express = require("express"),
     session = require("express-session"),
     bodyparser = require("body-parser"),
+    device = require("express-device"),
     io = require('./chatroom'),
     database = require('./mongoConfig'),
     webSite = require('./webSite'),
@@ -12,6 +13,7 @@ var app = express(),
 app.use(express.static( __dirname + '/assets'));
 app.use(bodyparser());
 app.use(session({secret : 'jshwk'}));
+app.use(device.capture());
 
 io.chatinit(http);
 
@@ -42,6 +44,7 @@ app.post('/addFeature',webSite.addFea);
 app.post('/delPrj',webSite.delPrj);
 
 app.post('/delFeature',webSite.delFea);
+
 
 http.listen(port);
 console.log("working on " + port);

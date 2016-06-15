@@ -10,16 +10,24 @@ exports.chatinit = function(http){
         socket.on('adduser',function(roomName){
             if(socket.room != undefined)
                 socket.leave(socket.room);
-            socket.room = roomName;
-            socket.join(roomName);
+	    var name = "";
+	    if(typeof roomName == "object") name = roomName.room;
+	    else name = roomName;
+	    console.log(name);
+            socket.room = name;
+            socket.join(name);
         });
         socket.on('disconnect', function(){
             socket.leave(socket.room);
         });
         socket.on('changeRoom',function(roomName){
             socket.leave(socket.room);
-            socket.join(roomName);
-            socket.room = roomName;
+	    var name = "";
+	    if(typeof roomName == "object") name = roomName.room;
+	    else name = roomName;
+	    console.log(name);
+            socket.join(name);
+            socket.room = name;
         });
     });
 

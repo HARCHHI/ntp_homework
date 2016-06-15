@@ -10,7 +10,6 @@ exports.login = function(req,res){
         userId = req.body['user'],
         userPwd = req.body['pwd'],
         userlogin = mongoose.model('user',database.UserSchema);
-    
 
         userlogin.findOne({user : userId},function(err,rs){
             var rsJ = {'pwd':''};
@@ -19,7 +18,7 @@ exports.login = function(req,res){
                 res.status(500).end();
             }
             else{
-                var logMess = {'mutilog':false,'lastLogin':null,'pwd':'',group : 'a'};
+                var logMess = {'mutilog':false,'lastLogin':null,'pwd':'',group : 'a','fail':false,'ses':rese.id};
                 rese.login = true;
                 rese.userId = userId;
 
@@ -223,8 +222,7 @@ exports.addPrj = function(req,res){
 };
 
 exports.getPrjs = function(req,res){
-    var groupName = req.query.group;
-    
+    var groupName = req.query.group; 
     var prjs = mongoose.model('prj',database.PrjSchema);
     prjs.find({masterId : groupName},function(err,rs){
         res.status(200).send(rs).end();
@@ -267,12 +265,13 @@ exports.delFea = function(req,res){
         },
         function delFeature(err,rs){
             var test = rs;
-
             rs.Desc.splice(rs.Desc.indexOf(feaDesc),1);
             rs.feature.splice(rs.feature.indexOf(feaName),1);
-            prjModel.update({name : prjName,masterId : groupName},rs,{upsert : true},this);
+	    delete rs._id;
+            prjModel.update({name : prjName,masterId : groupName},{Desc:rs.Desc,feature:rs.feature},{upsert : true},this);
         },
         function sendSuccess(err){
+	    if(err)console.error(err.stack);
             res.status(200).send({fail:false}).end();
         }
     );

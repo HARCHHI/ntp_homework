@@ -38,7 +38,7 @@
         <h2>Groups</h2>
         <div class="list-group" " style="font-family: 'Noto Sans TC', sans-serif;">
             <%var a=true; for (var group in groups){%>
-            <a href="ascript:void(0)" data='group'  class="list-group-item<%if(!a){%> active<%a=true}%>" id='<%=groups[group]%>'>
+            <a href="javascript:void(0)" data='group'  class="list-group-item<%if(!a){%> active<%a=true}%>" id='<%=groups[group]%>'>
                 <%=groups[group]%>
             </a>
             <%}%>
@@ -47,7 +47,7 @@
         <h2>Projects</h2>
         <div class="list-group" style="font-family: 'Noto Sans TC', sans-serif;">
             <%var i =0;for(var prj in prjs){%>
-            <a href="ascript:void(0)" class="list-group-item " data='project' index='<%=i%>' id='<%=prjs[prj].get('name')%>'>
+            <a href="javascript:void(0)" class="list-group-item " data='project' index='<%=i%>' id='<%=prjs[prj].get('name')%>'>
                 <%=prjs[prj].get('name')%>
             </a>
             <%i++;}%>

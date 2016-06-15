@@ -341,17 +341,23 @@ var V_prjMan = ExtView.extend({
                                       "</td><td>" + 
                                       model.get('feaDesc') + 
                                       "</td></tr>");
+		self.State.get("showPrj").get("Desc").push(model.get("feaDesc"));
+		self.State.get("showPrj").get("feature").push(model.get("feaName"));
             }
         });
 },
     delFea : function(e){
         var target = $(e.target);
+	var self = this;
         this.newfea.set('feaName',target.attr('id'));
         this.newfea.set('feaDesc',target.attr('desc'));
         this.newfea.urlRoot ='/delFeature';
         this.newfea.save({},{
             success : function(model,res){
                 $('#_'+model.get('feaName')).remove();
+                self.State.get("showPrj").get("Desc").splice(self.State.get("showPrj").get("Desc").indexOf(model.get("feaDesc")),1);
+                self.State.get("showPrj").get("feature").splice(self.State.get("showPrj").get("feature").indexOf(model.get("feaName")),1);
+
             }
         });
     }
