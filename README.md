@@ -2,9 +2,9 @@
 a simple project manager system
 
 #install#
-  npm install
+    npm install
   
 #run#
-  node app.js
+    node app.js
 
 and visit http://localhost:3000/
